@@ -8,6 +8,7 @@ const createCooldown = require('./createCooldown');
 const app = express();
 
 app.use(express.static(`${__dirname}/../client`));
+//app.listen(process.env.PORT);
 
 const server = http.createServer(app);
 const io = socketio(server);
@@ -38,6 +39,10 @@ server.on('error', (err) => {
     console.error(err);
 });
 
-server.listen(8080, () => {
-    console.log('server is ready');
-})
+let port = process.env.PORT;
+if (port == null || port === "") {
+    port = 8080;
+}
+server.listen(port, () => {
+    console.log('server is ready on port ' + port);
+});
