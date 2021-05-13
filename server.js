@@ -18,7 +18,7 @@ io.on('connection', (sock) => {
     let color = randomColor.randomColor();
     let name = "?";
     const cooldown = createCooldown(10);
-    sock.emit('board', { getBoard, color });
+    sock.emit('board', { board:getBoard(), color });
 
     sock.on('message', ({text, name}) => {
         io.emit('message', {text, name, color});
@@ -35,7 +35,7 @@ io.on('connection', (sock) => {
                 io.emit('message', {text: 'Gewonnen hat diese Farbe', name, color});
                 io.emit('message', {text: 'Neue Runde lelele', name, color: '#000000'});
                 clear();
-                io.emit('board', { getBoard , undefined});
+                io.emit('board', { board:getBoard() , undefined});
             }
         };
     });
