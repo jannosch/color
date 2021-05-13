@@ -1,7 +1,8 @@
-const log = (text) => {
+const log = ({ text, name, color }) => {
   const parent = document.querySelector('#events');
   const el = document.createElement('li');
-  el.innerHTML = text;
+  el.innerHTML = '[' + name + '] ' + text;
+  el.style.color = color;
 
   parent.appendChild(el);
   parent.scrollTop = parent.scrollHeight;
@@ -13,9 +14,13 @@ const onChatSubmitted = (sock) => (e) => {
 
   const input = document.querySelector('#chat');
   const text = input.value;
+  let name = document.getElementById('name').value;
+  if (name === "") {
+      name = '?';
+  }
   input.value = '';
 
-  sock.emit('message', text);
+  sock.emit('message', { text, name });
 };
 
 const getClickCoordinates = (element, ev) => {
@@ -26,6 +31,11 @@ const getClickCoordinates = (element, ev) => {
     x: clientX - left,
     y: clientY - top,
   }
+};
+
+const changeColor = (color) => {
+    document.getElementById('name').style.color = color;
+    document.getElementById('color').value = color;
 };
 
 const getBoard = (canvas, numCells = 20) => {
@@ -91,7 +101,10 @@ const getBoard = (canvas, numCells = 20) => {
     sock.emit('turn', getCellCoordinates(x, y));
   };
 
-  sock.on('board', reset);
+  sock.on('board', ({ board, color }) => {
+      changeColor(color);
+      reset();
+  });
   sock.on('message', log);
   sock.on('turn', ({ x, y, color }) => fillCell(x, y, color));
 
@@ -99,5 +112,13 @@ const getBoard = (canvas, numCells = 20) => {
     .querySelector('#chat-form')
     .addEventListener('submit', onChatSubmitted(sock));
 
+  document.getElementById('color').addEventListener('change', (ev) => {
+      const color = ev.target.value;
+      document.getElementById('name').style.color = color;
+      sock.emit('color', color);
+  });
+
   canvas.addEventListener('click', onClick);
+
+
 })();

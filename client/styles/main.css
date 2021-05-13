@@ -79,3 +79,9 @@ canvas {
 #events {
   height: 150px;
 }
+
+#name {
+  margin: 10px 6px 0px 0px;
+  font-size: 1.0rem;
+  width: 286px;
+}

@@ -15,11 +15,12 @@ const io = socketio(server);
 const { clear, getBoard, makeTurn } = createBoard(20);
 
 io.on('connection', (sock) => {
-    const color = randomColor.randomColor();
+    let color = randomColor.randomColor();
     const cooldown = createCooldown(2000);
-    sock.emit('board', getBoard());
+    sock.emit('board', { getBoard, color });
 
-    sock.on('message', (text) => io.emit('message', text));
+    sock.on('message', ({text, name}) => io.emit('message', {text, name, color}));
+    sock.on('color', (c) => {color = c});
     sock.on('turn', ({ x, y }) => {
         if (cooldown()) {
             const playerWon = makeTurn(x, y, color);
@@ -31,7 +32,7 @@ io.on('connection', (sock) => {
                 clear();
                 io.emit('board');
             }
-        }
+        };
     });
 });
 
