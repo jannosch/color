@@ -33,7 +33,7 @@ io.on('connection', (sock) => {
             if (playerWon) {
                 const name = 'Server';
                 io.emit('message', {text: 'Gewonnen hat diese Farbe', name, color});
-                io.emit('message', {text: 'Neue Runde lelele' , name, color: '#000000'});
+                io.emit('message', {text: 'Neue Runde lelele', name, color: '#000000'});
                 clear();
                 io.emit('board', { getBoard , undefined});
             }
