@@ -34,8 +34,10 @@ const getClickCoordinates = (element, ev) => {
 };
 
 const changeColor = (color) => {
-    document.getElementById('name').style.color = color;
-    document.getElementById('color').value = color;
+    if (color !== undefined) {
+        document.getElementById('name').style.color = color;
+        document.getElementById('color').value = color;
+    }
 };
 
 const getBoard = (canvas, numCells = 20) => {
@@ -103,7 +105,7 @@ const getBoard = (canvas, numCells = 20) => {
 
   sock.on('board', ({ board, color }) => {
       changeColor(color);
-      reset();
+      reset(board);
   });
   sock.on('message', log);
   sock.on('turn', ({ x, y, color }) => fillCell(x, y, color));

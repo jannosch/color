@@ -16,10 +16,14 @@ const { clear, getBoard, makeTurn } = createBoard(20);
 
 io.on('connection', (sock) => {
     let color = randomColor.randomColor();
-    const cooldown = createCooldown(2000);
+    let name = "?";
+    const cooldown = createCooldown(10);
     sock.emit('board', { getBoard, color });
 
-    sock.on('message', ({text, name}) => io.emit('message', {text, name, color}));
+    sock.on('message', ({text, name}) => {
+        io.emit('message', {text, name, color});
+        this.name = name;
+    });
     sock.on('color', (c) => {color = c});
     sock.on('turn', ({ x, y }) => {
         if (cooldown()) {
@@ -27,10 +31,11 @@ io.on('connection', (sock) => {
             io.emit('turn', {x, y, color})
 
             if (playerWon) {
-                sock.emit('message', 'You gewonnen!');
-                io.emit('message', 'Neue Runde lelele!');
+                const name = 'Server';
+                io.emit('message', {text: 'Gewonnen hat diese Farbe' + name , name, color});
+                io.emit('message', {text: 'Neue Runde lelele' , name, color: '#000000'});
                 clear();
-                io.emit('board');
+                io.emit('board', { getBoard , undefined});
             }
         };
     });
