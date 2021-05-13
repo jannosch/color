@@ -7,7 +7,7 @@ const createCooldown = require('./createCooldown');
 
 const app = express();
 
-app.use(express.static(`${__dirname}/../client`));
+app.use(express.static(`./client`));
 //app.listen(process.env.PORT);
 
 const server = http.createServer(app);
